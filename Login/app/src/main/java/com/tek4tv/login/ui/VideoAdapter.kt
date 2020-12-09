@@ -24,21 +24,25 @@ class VideoAdapter : RecyclerView.Adapter<VideoViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: VideoViewHolder, position: Int) {
-        holder.bind(videos[position])
+        holder.bind(videos[position], videoClickListener)
     }
 
     override fun getItemCount(): Int = videos.size
 }
 
-class VideoViewHolder(root: View) : RecyclerView.ViewHolder(root) {
+class VideoViewHolder(private val root: View) : RecyclerView.ViewHolder(root) {
     private val imgThumb = root.findViewById<ImageView>(R.id.img_video_thumb)
     private val txtTitle = root.findViewById<TextView>(R.id.txt_video_title)
     private val txtCreatedDate = root.findViewById<TextView>(R.id.txt_created_date)
 
-    fun bind(video: Video) {
+    fun bind(video: Video, itemClickListener : (Video) -> Unit) {
         Glide.with(imgThumb.context)
             .load(video.thumbUrl)
             .into(imgThumb)
+
+        root.setOnClickListener {
+            itemClickListener(video)
+        }
 
         txtTitle.text = video.title
         txtCreatedDate.text = video.createDate

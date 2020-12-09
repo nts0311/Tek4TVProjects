@@ -1,5 +1,6 @@
 package com.tek4tv.login.ui
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
@@ -27,6 +28,11 @@ class VideoListActivity : AppCompatActivity() {
     {
         rv_videos.adapter = videosAdapter
         rv_videos.layoutManager = LinearLayoutManager(this)
+        videosAdapter.videoClickListener= {
+            val intent = Intent(applicationContext, VideoPlayerActivity::class.java)
+            intent.putExtra(VideoPlayerActivity.VIDEO_KEY, it)
+            startActivity(intent)
+        }
     }
 
     private fun registerObservers()

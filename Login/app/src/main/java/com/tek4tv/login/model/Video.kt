@@ -24,7 +24,8 @@ data class Video(
     val media: Media,
     @Json(name = "Playlist")
     val playList: PlayList,
-    val path: String = "https://storage.tek4tv.vn/MAM/DAI_PHAT_THANH_TRUYEN_HINH_TRA_VINH/2020/11/06/CANG_LONG_PHAT_HUY_HIEU_QUA_SUC_MANH_DAN_VAN_KHEO/182854_Cang_Long_phat_huy_hieu_qua_suc_manh_Dan_van_kheo.mp4"
+    @Json(name = "Path")
+    val path: String
 ) : Serializable
 
 data class Media(

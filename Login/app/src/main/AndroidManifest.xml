@@ -12,7 +12,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Login">
-        <activity android:name=".ui.VideoPlayerActivity"></activity>
+        <activity
+            android:name=".ui.VideoPlayerActivity"
+            android:theme="@style/Theme.Login.NoActionBar" />
         <activity android:name=".ui.VideoListActivity" />
         <activity
             android:name=".ui.MainActivity"
