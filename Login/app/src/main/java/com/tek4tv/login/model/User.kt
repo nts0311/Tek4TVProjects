@@ -1,6 +1,8 @@
 package com.tek4tv.login.model
 
 import com.squareup.moshi.Json
+import com.tek4tv.login.db.entities.Role
+import com.tek4tv.login.db.entities.SiteMapId
 
 data class User(
     @Json(name = "Roles")
@@ -19,3 +21,11 @@ data class UserRole(
     @Json(name = "Description")
     val description: String
 )
+
+fun UserRole.asDb() = Role(id, name, description)
+fun List<UserRole>.asDb() = map {it.asDb()}
+
+fun List<Int>.asSiteMap() = map {SiteMapId(it)}
+
+fun User.asDb() = com.tek4tv.login.db.entities.User(userId)
+

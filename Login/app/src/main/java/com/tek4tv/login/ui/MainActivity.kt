@@ -1,14 +1,14 @@
-package com.tek4tv.login
+package com.tek4tv.login.ui
 
+import android.content.Intent
 import android.os.Bundle
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
-import androidx.lifecycle.ViewModelProvider
+import com.tek4tv.login.R
 import com.tek4tv.login.network.UserBody
+import com.tek4tv.login.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -49,6 +49,10 @@ class MainActivity : AppCompatActivity() {
         viewModel.user.observe(this)
         {
             txt_result.text = it.toString()
+
+            val startVideoActivity = Intent(applicationContext, VideoListActivity::class.java)
+            startActivity(startVideoActivity)
+            finish()
         }
     }
 

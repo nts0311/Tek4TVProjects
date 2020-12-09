@@ -7,7 +7,6 @@ import com.tek4tv.login.db.entities.User
 
 @Dao
 interface UserDao {
-
     @Query("SELECT * FROM User WHERE userId = :userId")
     suspend fun getUser(userId : String) : User?
 
