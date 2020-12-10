@@ -3,7 +3,7 @@ package com.tek4tv.login.di
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import com.tek4tv.login.network.Tek4TvService
+import com.tek4tv.login.network.AuthService
 import com.tek4tv.login.network.VideosService
 import dagger.Module
 import dagger.Provides
@@ -34,8 +34,8 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideTek4TvService (retrofit: Retrofit): Tek4TvService =
-        retrofit.create(Tek4TvService::class.java)
+    fun provideTek4TvService (retrofit: Retrofit): AuthService =
+        retrofit.create(AuthService::class.java)
 
     @Provides
     @Singleton

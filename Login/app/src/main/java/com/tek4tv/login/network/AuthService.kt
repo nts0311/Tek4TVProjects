@@ -7,10 +7,10 @@ import retrofit2.http.Header
 import retrofit2.http.Headers
 import retrofit2.http.POST
 
-interface Tek4TvService {
+interface AuthService {
     @Headers("Content-Type: application/json")
     @POST("/api/token")
-    suspend fun getToken(@Body body: Map<String, String>): String
+    suspend fun getToken(@Body body: Map<String, String>): Response<String>
 
     @Headers("Content-Type: application/json")
     @POST("/iot/v1/app/login")

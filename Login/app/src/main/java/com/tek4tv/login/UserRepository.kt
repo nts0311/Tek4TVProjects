@@ -4,7 +4,7 @@ import com.tek4tv.login.db.AppDatabase
 import com.tek4tv.login.model.User
 import com.tek4tv.login.model.asDb
 import com.tek4tv.login.model.asSiteMap
-import com.tek4tv.login.network.Tek4TvService
+import com.tek4tv.login.network.AuthService
 import com.tek4tv.login.network.UserBody
 import retrofit2.Response
 import javax.inject.Inject
@@ -12,7 +12,7 @@ import javax.inject.Singleton
 
 @Singleton
 class UserRepository @Inject constructor(
-    private val tek4TvService: Tek4TvService,
+    private val authService: AuthService,
     private val appDatabase: AppDatabase
 ) {
     var currentToken = ""
@@ -23,7 +23,7 @@ class UserRepository @Inject constructor(
             "UserName" to body.username,
             "PassWord" to body.password
         )
-        val response = tek4TvService.login(mbody, "Bearer ".plus(token))
+        val response = authService.login(mbody, "Bearer ".plus(token))
 
         if(response.isSuccessful)
             currentUser = response.body()
@@ -38,9 +38,10 @@ class UserRepository @Inject constructor(
             "AccountId" to "64857311-d116-4c38-b0ab-1643050c441d"
         )
 
-        val token = tek4TvService.getToken(body)
-        currentToken = token
-        return token
+        val response = authService.getToken(body)
+        if(response.isSuccessful)
+            currentToken = response.body()!!
+        return currentToken
     }
 
     suspend fun saveUser(user: User)

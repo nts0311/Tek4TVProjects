@@ -14,15 +14,16 @@ import kotlinx.coroutines.launch
 
 class MainViewModel @ViewModelInject
 constructor(
-    private val userRepository: UserRepository,
+    private val userRepository: UserRepository
 ) : ViewModel() {
-    private var token : String = ""
+    var token : String = ""
     private var getTokenJob : Job? = null
 
     private val _user  = MutableLiveData<User>()
     val user : LiveData<User> = _user
 
-    init {
+    fun getToken()
+    {
         getTokenJob = viewModelScope.launch {
             token = userRepository.getToken()
             Log.d("Token", token)
@@ -39,7 +40,6 @@ constructor(
                 _user.value = response.body()
                 //userRepository.saveUser(response.body()!!)
             }
-
         }
     }
 

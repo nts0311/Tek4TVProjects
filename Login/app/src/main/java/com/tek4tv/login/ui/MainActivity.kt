@@ -1,10 +1,14 @@
 package com.tek4tv.login.ui
 
+import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.activity.viewModels
 import com.tek4tv.login.R
 import com.tek4tv.login.network.UserBody
@@ -58,9 +62,29 @@ class MainActivity : AppCompatActivity() {
 
     private fun login()
     {
+        if(!isNetworkAvailable())
+        {
+            Toast.makeText(this, "Network not available", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        if(viewModel.token == "")
+            viewModel.getToken()
+
         val username = et_username.text.toString()
         val pass = et_password.text.toString()
 
         viewModel.login(UserBody(username, pass))
+    }
+
+    private fun isNetworkAvailable(): Boolean {
+        val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetwork = cm.activeNetwork ?: return false
+
+        val nc = cm.getNetworkCapabilities(activeNetwork) ?: return false
+
+        return (nc.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
+                || nc.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR))
+                && nc.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
     }
 }

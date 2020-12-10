@@ -10,7 +10,8 @@ import com.bumptech.glide.Glide
 import com.tek4tv.login.R
 import com.tek4tv.login.model.Video
 
-class VideoAdapter : RecyclerView.Adapter<VideoViewHolder>() {
+
+class VideoAdapter(val showTitleHeader : Boolean = false) : RecyclerView.Adapter<VideoViewHolder>() {
     var videos: List<Video> = listOf()
         set(value) {
             field = value
@@ -18,6 +19,7 @@ class VideoAdapter : RecyclerView.Adapter<VideoViewHolder>() {
         }
 
     var videoClickListener : (Video) -> Unit = {}
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VideoViewHolder {
         return VideoViewHolder.from(parent)
