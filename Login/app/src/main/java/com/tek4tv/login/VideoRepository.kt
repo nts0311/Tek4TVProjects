@@ -30,8 +30,6 @@ class VideoRepository @Inject constructor(private val videosService: VideosServi
 
                 currentVideoList = response.body()!!.result
             }
-
-
             response
         }
         catch (e : Exception)

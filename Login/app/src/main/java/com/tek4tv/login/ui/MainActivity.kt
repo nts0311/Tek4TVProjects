@@ -60,6 +60,17 @@ class MainActivity : AppCompatActivity() {
         val username = et_username.text.toString()
         val pass = et_password.text.toString()
 
+        if(username.isEmpty()) {
+            Toast.makeText(this, "Enter username", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        if(pass.isEmpty())
+        {
+            Toast.makeText(this, "Enter password", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         viewModel.login(UserBody(username, pass))
     }
 

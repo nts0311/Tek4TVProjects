@@ -5,9 +5,11 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+import android.view.WindowInsets
 import android.view.WindowManager
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Constraints
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -48,12 +50,15 @@ class VideoPlayerActivity : AppCompatActivity() {
 
         val orientation = resources.configuration.orientation
         if(orientation == Configuration.ORIENTATION_LANDSCAPE)
+        {
             hideSystemUi()
-        else
+            videoView.layoutParams.height = ConstraintLayout.LayoutParams.MATCH_PARENT
+        }
+        else {
             showSystemUi()
+            videoView.layoutParams.height = ConstraintLayout.LayoutParams.WRAP_CONTENT
+        }
     }
-
-
 
     override fun onStart() {
         super.onStart()
@@ -88,7 +93,8 @@ class VideoPlayerActivity : AppCompatActivity() {
     private fun hideSystemUi() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            window.setDecorFitsSystemWindows(true)
+            window.insetsController?.hide(WindowInsets.Type.statusBars())
+
         } else {
             // hide status bar
             window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -101,7 +107,7 @@ class VideoPlayerActivity : AppCompatActivity() {
     private fun showSystemUi() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            window.setDecorFitsSystemWindows(false)
+            window.insetsController?.show(WindowInsets.Type.statusBars())
         } else {
             // Show status bar
             window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
