@@ -1,6 +1,8 @@
 package com.tek4tv.login.repositories
 
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.tek4tv.login.db.AppDatabase
 import com.tek4tv.login.model.User
 import com.tek4tv.login.model.asDb
@@ -19,6 +21,10 @@ class UserRepository @Inject constructor(
     var currentToken = ""
     var currentUser: User? = null
 
+    private val _errorText = MutableLiveData<String>()
+    val errorText: LiveData<String> = _errorText
+
+
     suspend fun login(body: UserBody, token: String): Response<User>? {
         val mbody = mapOf(
             "UserName" to body.username,
@@ -29,10 +35,13 @@ class UserRepository @Inject constructor(
 
             if (response.isSuccessful)
                 currentUser = response.body()
+            else
+                _errorText.value = "Error: ${response.code()} - Error Message: ${response.message()}"
 
             response
         } catch (e: Exception) {
             Log.e("getToken()", e.message!!)
+            _errorText.value = e.message ?: ""
             null
         }
     }
@@ -48,9 +57,12 @@ class UserRepository @Inject constructor(
             val response = authService.getToken(body)
             if (response.isSuccessful)
                 currentToken = response.body()!!
+            else
+                _errorText.value = "Error: ${response.code()} - Error Message: ${response.message()}"
             currentToken
         } catch (e: Exception) {
             Log.e("getToken()", e.message!!)
+            _errorText.value = e.message ?: ""
             ""
         }
     }

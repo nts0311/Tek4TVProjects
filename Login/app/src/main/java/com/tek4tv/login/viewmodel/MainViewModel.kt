@@ -22,8 +22,7 @@ constructor(
     private val _user  = MutableLiveData<User>()
     val user : LiveData<User> = _user
 
-    private val _errorText = MutableLiveData<String>()
-    val errorText : LiveData<String> = _errorText
+    val errorText : LiveData<String> = userRepository.errorText
 
     fun getToken()
     {
@@ -45,14 +44,7 @@ constructor(
                     _user.value = response.body()
                     userRepository.saveUser(response.body()!!)
                 }
-                else
-                {
-                    _errorText.value = "Error: ${response.code()} - Error Message: ${response.message()}"
-                }
-            }
-            else
-            {
-                _errorText.value = "Cannot get response"
+
             }
         }
     }

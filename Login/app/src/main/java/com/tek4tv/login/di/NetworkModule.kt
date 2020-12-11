@@ -34,7 +34,7 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideTek4TvService (retrofit: Retrofit): AuthService =
+    fun provideAuthService (retrofit: Retrofit): AuthService =
         retrofit.create(AuthService::class.java)
 
     @Provides
