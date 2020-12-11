@@ -16,18 +16,6 @@ object DbModule {
     @Provides
     @Singleton
     fun provideDatabase(@ApplicationContext context: Context) =
-        Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java)
+        Room.databaseBuilder(context, AppDatabase::class.java, "Videos")
             .build()
-
-    @Provides
-    @Singleton
-    fun provideUserDao(appDb : AppDatabase) = appDb.userDao
-
-    @Provides
-    @Singleton
-    fun provideSiteMapIdDao(appDb : AppDatabase) = appDb.siteMapIdDao
-
-    @Provides
-    @Singleton
-    fun provideRoleDao(appDb : AppDatabase) = appDb.roleDao
 }

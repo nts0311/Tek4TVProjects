@@ -19,6 +19,8 @@ class VideoListActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_video_list)
 
+        title = "Videos"
+
         setupRecycleView()
         registerObservers()
         viewModel.getVideos()

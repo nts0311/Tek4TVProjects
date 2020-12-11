@@ -32,24 +32,7 @@ class MainActivity : AppCompatActivity() {
         registerObservers()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.menu_main, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        return when (item.itemId) {
-            R.id.action_settings -> true
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
-    private fun registerObservers()
-    {
+    private fun registerObservers() {
         viewModel.user.observe(this)
         {
             txt_result.text = it.toString()
@@ -58,17 +41,20 @@ class MainActivity : AppCompatActivity() {
             startActivity(startVideoActivity)
             finish()
         }
+
+        viewModel.errorText.observe(this)
+        {
+            Toast.makeText(this@MainActivity, it, Toast.LENGTH_SHORT).show()
+        }
     }
 
-    private fun login()
-    {
-        if(!isNetworkAvailable())
-        {
+    private fun login() {
+        if (!isNetworkAvailable()) {
             Toast.makeText(this, "Network not available", Toast.LENGTH_SHORT).show()
             return
         }
 
-        if(viewModel.token == "")
+        if (viewModel.token == "")
             viewModel.getToken()
 
         val username = et_username.text.toString()

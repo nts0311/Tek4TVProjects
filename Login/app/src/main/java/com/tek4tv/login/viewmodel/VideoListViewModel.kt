@@ -22,7 +22,7 @@ class VideoListViewModel @ViewModelInject constructor(
         viewModelScope.launch {
             val response = videoRepository.getVideos(2014, userRepository.currentToken)
 
-            if(response.isSuccessful)
+            if(response != null && response.isSuccessful)
                 _videos.value = response.body()!!.result
         }
     }

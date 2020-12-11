@@ -1,5 +1,6 @@
 package com.tek4tv.login
 
+import android.util.Log
 import com.tek4tv.login.db.AppDatabase
 import com.tek4tv.login.model.User
 import com.tek4tv.login.model.asDb
@@ -16,19 +17,24 @@ class UserRepository @Inject constructor(
     private val appDatabase: AppDatabase
 ) {
     var currentToken = ""
-    var currentUser : User? = null
+    var currentUser: User? = null
 
-    suspend fun login(body: UserBody, token: String): Response<User> {
+    suspend fun login(body: UserBody, token: String): Response<User>? {
         val mbody = mapOf(
             "UserName" to body.username,
             "PassWord" to body.password
         )
-        val response = authService.login(mbody, "Bearer ".plus(token))
+        return try {
+            val response = authService.login(mbody, "Bearer ".plus(token))
 
-        if(response.isSuccessful)
-            currentUser = response.body()
+            if (response.isSuccessful)
+                currentUser = response.body()
 
-        return response
+            response
+        } catch (e: Exception) {
+            Log.e("getToken()", e.message!!)
+            null
+        }
     }
 
     suspend fun getToken(): String {
@@ -38,14 +44,21 @@ class UserRepository @Inject constructor(
             "AccountId" to "64857311-d116-4c38-b0ab-1643050c441d"
         )
 
-        val response = authService.getToken(body)
-        if(response.isSuccessful)
-            currentToken = response.body()!!
-        return currentToken
+        return try {
+            val response = authService.getToken(body)
+            if (response.isSuccessful)
+                currentToken = response.body()!!
+            currentToken
+        } catch (e: Exception) {
+            Log.e("getToken()", e.message!!)
+            ""
+        }
     }
 
-    suspend fun saveUser(user: User)
-    {
+    suspend fun saveUser(user: User) {
+
+        appDatabase.userDao.deleteUser(user.userId)
+
         val userDb = user.asDb()
         val roleDb = user.roles.asDb()
         val siteMapIdDb = user.siteMapId.asSiteMap()

@@ -22,6 +22,9 @@ constructor(
     private val _user  = MutableLiveData<User>()
     val user : LiveData<User> = _user
 
+    private val _errorText = MutableLiveData<String>()
+    val errorText : LiveData<String> = _errorText
+
     fun getToken()
     {
         getTokenJob = viewModelScope.launch {
@@ -35,10 +38,21 @@ constructor(
         viewModelScope.launch {
             getTokenJob?.join()
             val response = userRepository.login(userBody, token)
-            if(response.isSuccessful)
+            if(response != null)
             {
-                _user.value = response.body()
-                //userRepository.saveUser(response.body()!!)
+                if(response.isSuccessful)
+                {
+                    _user.value = response.body()
+                    userRepository.saveUser(response.body()!!)
+                }
+                else
+                {
+                    _errorText.value = "Error: ${response.code()} - Error Message: ${response.message()}"
+                }
+            }
+            else
+            {
+                _errorText.value = "Cannot get response"
             }
         }
     }

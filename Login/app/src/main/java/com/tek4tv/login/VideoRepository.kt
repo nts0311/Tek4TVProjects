@@ -1,5 +1,6 @@
 package com.tek4tv.login
 
+import android.util.Log
 import com.tek4tv.login.model.Video
 import com.tek4tv.login.network.VideosResponse
 import com.tek4tv.login.network.VideosService
@@ -12,15 +13,22 @@ class VideoRepository @Inject constructor(private val videosService: VideosServi
 
     var videoList = listOf<Video>()
 
-    suspend fun getVideos(siteMapID : Int, token : String) : Response<VideosResponse>
+    suspend fun getVideos(siteMapID : Int, token : String) : Response<VideosResponse>?
     {
         val body = mapOf("SiteMapID" to siteMapID.toString())
 
-        val response = videosService.getVideo(body, "Bearer ".plus(token))
+        return try {
+            val response = videosService.getVideo(body, "Bearer ".plus(token))
 
-        if(response.isSuccessful)
-            videoList = response.body()!!.result
+            if(response.isSuccessful)
+                videoList = response.body()!!.result
 
-        return response
+            response
+        }
+        catch (e : Exception)
+        {
+            Log.e("VideoRepo.getVideos", e.message ?: "")
+            null
+        }
     }
 }

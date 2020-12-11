@@ -1,8 +1,11 @@
 package com.tek4tv.login.ui
 
 import android.content.res.Configuration
+import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+import android.view.WindowManager
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.Constraints
@@ -40,8 +43,17 @@ class VideoPlayerActivity : AppCompatActivity() {
             viewModel.curVideo = intent.getSerializableExtra(VIDEO_KEY) as Video
         txt_vid_name.text = viewModel.curVideo!!.title
 
+
         videoView = findViewById(R.id.video_view)
+
+        val orientation = resources.configuration.orientation
+        if(orientation == Configuration.ORIENTATION_LANDSCAPE)
+            hideSystemUi()
+        else
+            showSystemUi()
     }
+
+
 
     override fun onStart() {
         super.onStart()
@@ -73,17 +85,42 @@ class VideoPlayerActivity : AppCompatActivity() {
         }
     }
 
+    private fun hideSystemUi() {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            window.setDecorFitsSystemWindows(true)
+        } else {
+            // hide status bar
+            window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            window.decorView.systemUiVisibility =
+                View.SYSTEM_UI_FLAG_IMMERSIVE or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+        }
+
+    }
+
+    private fun showSystemUi() {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            window.setDecorFitsSystemWindows(false)
+        } else {
+            // Show status bar
+            window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            window.decorView.systemUiVisibility = SYSTEM_UI_FLAG_LAYOUT_STABLE
+        }
+
+    }
+
     private fun initPlayer()
     {
         player = SimpleExoPlayer.Builder(this).build()
         videoView.player = player
+        player?.playWhenReady = true
         playVideo(viewModel.curVideo)
     }
 
     private fun releasePlayer() {
         if (player != null) {
             viewModel.apply {
-                playWhenReady = player?.playWhenReady!!
                 playbackPosition = player?.currentPosition!!
                 currentWindow = player?.currentWindowIndex!!
             }
@@ -129,7 +166,6 @@ class VideoPlayerActivity : AppCompatActivity() {
         txt_vid_name.text = video.title
         player?.apply {
             setMediaItem(mediaItem)
-            playWhenReady = viewModel.playWhenReady
             seekTo(viewModel.currentWindow, viewModel.playbackPosition)
             prepare()
         }
