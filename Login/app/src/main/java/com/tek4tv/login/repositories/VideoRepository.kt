@@ -1,4 +1,4 @@
-package com.tek4tv.login
+package com.tek4tv.login.repositories
 
 import android.util.Log
 import com.tek4tv.login.model.Video

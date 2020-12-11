@@ -2,7 +2,7 @@ package com.tek4tv.login.viewmodel
 
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
-import com.tek4tv.login.VideoRepository
+import com.tek4tv.login.repositories.VideoRepository
 import com.tek4tv.login.model.Video
 
 class VideoPlayerViewModel @ViewModelInject constructor(

@@ -6,7 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tek4tv.login.UserRepository
+import com.tek4tv.login.repositories.UserRepository
 import com.tek4tv.login.model.User
 import com.tek4tv.login.network.UserBody
 import kotlinx.coroutines.Job
