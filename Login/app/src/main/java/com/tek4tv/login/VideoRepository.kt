@@ -11,17 +11,26 @@ import javax.inject.Singleton
 @Singleton
 class VideoRepository @Inject constructor(private val videosService: VideosService) {
 
-    var videoList = listOf<Video>()
+    var allVideoList = listOf<Video>()
+    var currentVideoList = listOf<Video>()
 
-    suspend fun getVideos(siteMapID : Int, token : String) : Response<VideosResponse>?
+    suspend fun getVideos(siteMapID : Int, token : String, query : String = "") : Response<VideosResponse>?
     {
-        val body = mapOf("SiteMapID" to siteMapID.toString())
+        val body = mutableMapOf("SiteMapID" to siteMapID.toString())
+        if(query != "")
+            body["KeySearch"] = query
 
         return try {
             val response = videosService.getVideo(body, "Bearer ".plus(token))
 
             if(response.isSuccessful)
-                videoList = response.body()!!.result
+            {
+                if(query == "")
+                    allVideoList = response.body()!!.result
+
+                currentVideoList = response.body()!!.result
+            }
+
 
             response
         }

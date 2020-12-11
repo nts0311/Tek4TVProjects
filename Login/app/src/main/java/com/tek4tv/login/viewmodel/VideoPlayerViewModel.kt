@@ -12,7 +12,7 @@ class VideoPlayerViewModel @ViewModelInject constructor(
     var playbackPosition: Long = 0
     var curVideo : Video? = null
 
-    var videoList = videoRepository.videoList
+    var videoList = videoRepository.allVideoList
 
     fun resetVideoParams()
     {

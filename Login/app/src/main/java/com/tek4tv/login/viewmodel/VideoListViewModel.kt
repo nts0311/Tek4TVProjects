@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.tek4tv.login.UserRepository
 import com.tek4tv.login.VideoRepository
 import com.tek4tv.login.model.Video
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class VideoListViewModel @ViewModelInject constructor(
@@ -17,13 +18,21 @@ class VideoListViewModel @ViewModelInject constructor(
     private val _videos = MutableLiveData<List<Video>>()
     val videos : LiveData<List<Video>> = _videos
 
-    fun getVideos()
+    private var getVideosJob: Job? = null
+
+    fun getVideos(query: String = "")
     {
-        viewModelScope.launch {
-            val response = videoRepository.getVideos(2014, userRepository.currentToken)
+        getVideosJob?.cancel()
+        getVideosJob = viewModelScope.launch {
+            val response = videoRepository.getVideos(2014, userRepository.currentToken, query)
 
             if(response != null && response.isSuccessful)
                 _videos.value = response.body()!!.result
         }
+    }
+
+    fun restoreAllVideoList()
+    {
+        _videos.value = videoRepository.allVideoList
     }
 }
