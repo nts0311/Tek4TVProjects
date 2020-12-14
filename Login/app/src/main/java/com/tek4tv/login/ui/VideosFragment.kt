@@ -43,13 +43,18 @@ class VideosFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setHasOptionsMenu(true)
+
 
         viewModel = ViewModelProvider(activity!!).get(playlistId!!, VideoListViewModel::class.java)
 
         setupRecycleView()
         registerObservers()
         viewModel.getVideos(playlistId!!)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setHasOptionsMenu(true)
     }
 
     private fun setupRecycleView() {
@@ -75,30 +80,35 @@ class VideosFragment : Fragment() {
         }
     }
 
-    /*override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 
         inflater.inflate(R.menu.video_list_menu, menu)
 
-        val searchItem = menu?.findItem(R.id.video_search)
+        val searchItem = menu.findItem(R.id.video_search)
         val searchView = searchItem?.actionView as SearchView
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 if (query != null)
-                    viewModel.getVideos(query)
+                {
+                    val filteredList = viewModel.videos.value!!.filter {
+                        it.title.toLowerCase().contains(query.toLowerCase())
+                    }
+
+                    videosAdapter.videos = filteredList
+                }
                 return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 if (newText != null && newText == "")
                 {
-
+                    videosAdapter.videos = viewModel.videos.value!!
                 }
-                    //viewModel.restoreAllVideoList()
                 return false
             }
         })
-    }*/
+    }
 
     companion object {
         @JvmStatic

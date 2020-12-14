@@ -61,6 +61,6 @@ class PlaylistActivity : AppCompatActivity() {
             tab.text = playlists[position].name
         }.attach()
 
-        vp_main.offscreenPageLimit = 1
+        vp_main.offscreenPageLimit = 2
     }
 }

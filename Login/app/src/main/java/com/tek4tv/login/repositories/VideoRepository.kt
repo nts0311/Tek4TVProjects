@@ -10,36 +10,7 @@ import javax.inject.Singleton
 
 @Singleton
 class VideoRepository @Inject constructor(private val videosService: VideosService) {
-
-    var allVideoList = listOf<Video>()
-    var currentVideoList = listOf<Video>()
-
     var videosMap = mutableMapOf<String, List<Video>>()
-
-    suspend fun getVideos(
-        siteMapID: Int,
-        token: String,
-        query: String = ""
-    ): Response<VideosResponse>? {
-        val body = mutableMapOf("SiteMapID" to siteMapID.toString())
-        if (query != "")
-            body["KeySearch"] = query
-
-        return try {
-            val response = videosService.getVideo(body, "Bearer ".plus(token))
-
-            if (response.isSuccessful) {
-                if (query == "")
-                    allVideoList = response.body()!!.result
-
-                currentVideoList = response.body()!!.result
-            }
-            response
-        } catch (e: Exception) {
-            Log.e("VideoRepo.getVideos", e.message ?: "")
-            null
-        }
-    }
 
     suspend fun getPlaylists(token: String): Resource<List<PlaylistItem>> {
         return performNetworkCall { videosService.getPlaylists("Bearer ".plus(token)) }
@@ -50,10 +21,5 @@ class VideoRepository @Inject constructor(private val videosService: VideosServi
         playlistId: String
     ): Resource<PlaylistDetailResponse> {
         return performNetworkCall { videosService.getPlaylistDetail("Bearer ".plus(token), playlistId) }
-    }
-
-    fun addVideos(playlistId: String, list: List<Video>)
-    {
-
     }
 }
