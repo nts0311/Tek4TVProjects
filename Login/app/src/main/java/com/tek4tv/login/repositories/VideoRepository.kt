@@ -14,6 +14,8 @@ class VideoRepository @Inject constructor(private val videosService: VideosServi
     var allVideoList = listOf<Video>()
     var currentVideoList = listOf<Video>()
 
+    var videosMap = mutableMapOf<String, List<Video>>()
+
     suspend fun getVideos(
         siteMapID: Int,
         token: String,
@@ -39,15 +41,19 @@ class VideoRepository @Inject constructor(private val videosService: VideosServi
         }
     }
 
-    suspend fun getPlaylists(body: PlaylistBody, token: String): Resource<List<PlaylistItem>> {
+    suspend fun getPlaylists(token: String): Resource<List<PlaylistItem>> {
         return performNetworkCall { videosService.getPlaylists("Bearer ".plus(token)) }
     }
 
     suspend fun getPlaylistDetail(
-        body: PlaylistBody,
         token: String,
         playlistId: String
     ): Resource<PlaylistDetailResponse> {
         return performNetworkCall { videosService.getPlaylistDetail("Bearer ".plus(token), playlistId) }
+    }
+
+    fun addVideos(playlistId: String, list: List<Video>)
+    {
+
     }
 }

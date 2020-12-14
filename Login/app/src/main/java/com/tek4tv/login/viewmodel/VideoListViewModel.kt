@@ -30,10 +30,7 @@ class VideoListViewModel @ViewModelInject constructor(
     fun getVideos(playlistId: String) {
         getVideosJob?.cancel()
         getVideosJob = viewModelScope.launch {
-
-            val playlistBody = PlaylistBody(userRepository.currentUser!!.roles, "2137")
             val response = videoRepository.getPlaylistDetail(
-                playlistBody,
                 userRepository.currentToken,
                 playlistId
             )
@@ -44,6 +41,7 @@ class VideoListViewModel @ViewModelInject constructor(
                 }
                 is Resource.Success -> {
                     _videos.value = response.data.videos
+                    videoRepository.videosMap[playlistId] = response.data.videos
                 }
             }
         }

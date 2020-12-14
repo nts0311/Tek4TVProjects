@@ -1,9 +1,10 @@
-package com.tek4tv.login.ui
+package com.tek4tv.login.ui.adapter
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.tek4tv.login.model.PlaylistItem
+import com.tek4tv.login.ui.VideosFragment
 
 class TabStateAdapter(fragmentActivity: FragmentActivity) : FragmentStateAdapter(fragmentActivity)
 {

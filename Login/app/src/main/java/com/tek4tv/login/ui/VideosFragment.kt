@@ -3,12 +3,11 @@ package com.tek4tv.login.ui
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tek4tv.login.R
@@ -44,6 +43,8 @@ class VideosFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setHasOptionsMenu(true)
+
         viewModel = ViewModelProvider(activity!!).get(playlistId!!, VideoListViewModel::class.java)
 
         setupRecycleView()
@@ -57,6 +58,7 @@ class VideosFragment : Fragment() {
         videosAdapter.videoClickListener = {
             val intent = Intent(context, VideoPlayerActivity::class.java)
             intent.putExtra(VideoPlayerActivity.VIDEO_KEY, it)
+            intent.putExtra(VideoPlayerActivity.PLAYLIST_ID_KEY, playlistId)
             startActivity(intent)
         }
     }
@@ -72,6 +74,31 @@ class VideosFragment : Fragment() {
             Log.e("err: VideoFrag",it)
         }
     }
+
+    /*override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+
+        inflater.inflate(R.menu.video_list_menu, menu)
+
+        val searchItem = menu?.findItem(R.id.video_search)
+        val searchView = searchItem?.actionView as SearchView
+
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                if (query != null)
+                    viewModel.getVideos(query)
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                if (newText != null && newText == "")
+                {
+
+                }
+                    //viewModel.restoreAllVideoList()
+                return false
+            }
+        })
+    }*/
 
     companion object {
         @JvmStatic

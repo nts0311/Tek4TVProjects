@@ -10,13 +10,11 @@ import android.view.WindowManager
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.Constraints
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.ui.PlayerView
-import com.google.android.exoplayer2.util.Log
 import com.google.android.exoplayer2.util.Util
 import com.tek4tv.login.R
 import com.tek4tv.login.model.Video
@@ -27,13 +25,13 @@ import kotlinx.android.synthetic.main.activity_video_player.*
 @AndroidEntryPoint
 class VideoPlayerActivity : AppCompatActivity() {
     private var player: SimpleExoPlayer? = null
-    private lateinit var videoView : PlayerView
-     
+    private lateinit var videoView: PlayerView
+
 
     private val videosAdapter = VideoAdapter()
 
-   private val viewModel : VideoPlayerViewModel by viewModels()
-    
+    private val viewModel: VideoPlayerViewModel by viewModels()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,20 +39,21 @@ class VideoPlayerActivity : AppCompatActivity() {
 
         setupRecycleView()
 
-        if(viewModel.curVideo == null)
+        if (viewModel.curVideo == null)
             viewModel.curVideo = intent.getSerializableExtra(VIDEO_KEY) as Video
+
+        viewModel.playlistId = intent.getStringExtra(PLAYLIST_ID_KEY) ?: ""
+
         txt_vid_name.text = viewModel.curVideo!!.title
 
 
         videoView = findViewById(R.id.video_view)
 
         val orientation = resources.configuration.orientation
-        if(orientation == Configuration.ORIENTATION_LANDSCAPE)
-        {
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             hideSystemUi()
             videoView.layoutParams.height = ConstraintLayout.LayoutParams.MATCH_PARENT
-        }
-        else {
+        } else {
             showSystemUi()
             videoView.layoutParams.height = ConstraintLayout.LayoutParams.WRAP_CONTENT
         }
@@ -62,8 +61,7 @@ class VideoPlayerActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        if(Util.SDK_INT >= 24)
-        {
+        if (Util.SDK_INT >= 24) {
             initPlayer()
         }
     }
@@ -77,8 +75,7 @@ class VideoPlayerActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        if(Util.SDK_INT < 24)
-        {
+        if (Util.SDK_INT < 24) {
             initPlayer()
         }
     }
@@ -116,8 +113,7 @@ class VideoPlayerActivity : AppCompatActivity() {
 
     }
 
-    private fun initPlayer()
-    {
+    private fun initPlayer() {
         player = SimpleExoPlayer.Builder(this).build()
         videoView.player = player
         player?.playWhenReady = true
@@ -135,27 +131,22 @@ class VideoPlayerActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupRecycleView()
-    {
-        videosAdapter.videos = viewModel.videoList
-        videosAdapter.videoClickListener= {
+    private fun setupRecycleView() {
+        videosAdapter.videos = viewModel.getVideos()
+        videosAdapter.videoClickListener = {
             playVideo(it)
         }
         rv_video_list.adapter = videosAdapter
         rv_video_list.layoutManager = LinearLayoutManager(this)
-        rv_video_list.addOnScrollListener(object : RecyclerView.OnScrollListener()
-        {
+        rv_video_list.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 val canScrollUp = rv_video_list.canScrollVertically(-1)
-                if(!canScrollUp)
-                {
-                    if(txt_vid_name.visibility != View.VISIBLE)
+                if (!canScrollUp) {
+                    if (txt_vid_name.visibility != View.VISIBLE)
                         txt_vid_name.visibility = View.VISIBLE
-                }
-                else
-                {
-                    if(txt_vid_name.visibility != View.GONE)
+                } else {
+                    if (txt_vid_name.visibility != View.GONE)
                         txt_vid_name.visibility = View.GONE
                 }
             }
@@ -163,9 +154,9 @@ class VideoPlayerActivity : AppCompatActivity() {
     }
 
     private fun playVideo(video: Video?) {
-        if(video == null) return
+        if (video == null) return
 
-        if(video.id != viewModel.curVideo?.id)
+        if (video.id != viewModel.curVideo?.id)
             viewModel.resetVideoParams()
 
         val mediaItem = MediaItem.fromUri(video.path)
@@ -176,11 +167,11 @@ class VideoPlayerActivity : AppCompatActivity() {
             prepare()
         }
         viewModel.curVideo = video
-        videosAdapter.videos = viewModel.videoList.filter { it.id != video.id }
+        videosAdapter.videos = viewModel.getVideos().filter { it.id != video.id }
     }
 
-    companion object
-    {
+    companion object {
         const val VIDEO_KEY = "videos_key"
+        const val PLAYLIST_ID_KEY = "playlist_id_key"
     }
 }

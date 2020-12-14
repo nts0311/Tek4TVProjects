@@ -10,6 +10,7 @@ import com.tek4tv.login.network.PlaylistBody
 import com.tek4tv.login.network.Resource
 import com.tek4tv.login.repositories.UserRepository
 import com.tek4tv.login.repositories.VideoRepository
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class PlaylistViewModel @ViewModelInject constructor(
@@ -22,11 +23,12 @@ class PlaylistViewModel @ViewModelInject constructor(
     private val _error = MutableLiveData<String>()
     val error: LiveData<String> = _error
 
-    fun getPlaylist() {
-        viewModelScope.launch {
-            val playlistBody = PlaylistBody(userRepository.currentUser!!.roles, "2137")
+    private var getPlayListDetailJob : Job? = null
 
-            when (val resource = videoRepository.getPlaylists(playlistBody, userRepository.currentToken)) {
+    fun getPlaylist() {
+        getPlayListDetailJob?.cancel()
+         getPlayListDetailJob = viewModelScope.launch {
+            when (val resource = videoRepository.getPlaylists(userRepository.currentToken)) {
                 is Resource.Error -> {
                     _error.value = resource.message
                 }

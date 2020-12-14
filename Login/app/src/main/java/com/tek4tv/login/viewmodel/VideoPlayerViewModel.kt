@@ -10,13 +10,15 @@ class VideoPlayerViewModel @ViewModelInject constructor(
 ) : ViewModel() {
     var currentWindow = 0
     var playbackPosition: Long = 0
-    var curVideo : Video? = null
+    var curVideo: Video? = null
+    var playlistId: String = ""
+    
 
-    var videoList = videoRepository.allVideoList
-
-    fun resetVideoParams()
-    {
+    fun resetVideoParams() {
         currentWindow = 0
         playbackPosition = 0
     }
+
+    fun getVideos(): List<Video> =
+        videoRepository.videosMap[playlistId] ?: listOf()
 }

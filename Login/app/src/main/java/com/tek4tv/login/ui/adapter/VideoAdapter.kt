@@ -11,7 +11,7 @@ import com.tek4tv.login.R
 import com.tek4tv.login.model.Video
 
 
-class VideoAdapter() : RecyclerView.Adapter<VideoViewHolder>() {
+class VideoAdapter : RecyclerView.Adapter<VideoViewHolder>() {
     var videos: List<Video> = listOf()
         set(value) {
             field = value
