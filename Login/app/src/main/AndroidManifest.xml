@@ -16,7 +16,7 @@
         <activity
             android:name=".ui.VideoPlayerActivity"
             android:theme="@style/Theme.Login.NoActionBar" />
-        <activity android:name=".ui.VideoListActivity" />
+        <activity android:name=".ui.PlaylistActivity" />
         <activity
             android:name=".ui.MainActivity"
             android:label="@string/app_name"

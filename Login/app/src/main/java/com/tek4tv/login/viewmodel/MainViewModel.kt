@@ -1,6 +1,7 @@
 package com.tek4tv.login.viewmodel
 
 import android.util.Log
+import android.widget.Toast
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -44,9 +45,7 @@ constructor(
                     _user.value = response.body()
                     userRepository.saveUser(response.body()!!)
                 }
-
             }
         }
     }
-
 }

@@ -6,26 +6,32 @@ import java.io.Serializable
 data class Video(
     @Json(name = "ID")
     val id: Int,
+    @Json(name = "Description")
+    val description: String,
+    @Json(name = "Name")
+    val title: String,
     @Json(name = "ThumbNail")
     val thumbUrl: String,
-    @Json(name = "CreateDate")
+    @Json(name = "Path")
+    val path: String,
+    @Json(name = "Schedule")
+    val schedule: String,
+
+
+    /*@Json(name = "CreateDate")
     val createDate: String,
     @Json(name = "Title")
     val title: String,
-    @Json(name = "Description")
-    val description: String,
     @Json(name = "IsSchedule")
     val isSchedule: Boolean,
-    @Json(name = "Schedule")
-    val schedule: String,
+
     @Json(name = "Status")
     val status: String,
     @Json(name = "Media")
     val media: Media,
     @Json(name = "Playlist")
-    val playList: PlayList,
-    @Json(name = "Path")
-    val path: String
+    val playList: PlayList,*/
+
 ) : Serializable
 
 data class Media(

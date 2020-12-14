@@ -23,12 +23,13 @@ object NetworkModule {
             .add(KotlinJsonAdapterFactory())
             .build()
 
+
     @Provides
     @Singleton
     fun provideRetrofit(moshi: Moshi): Retrofit =
         Retrofit.Builder()
             .baseUrl("https://mam.tek4tv.vn/") //testing
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .addConverterFactory(MoshiConverterFactory.create(moshi).asLenient())
             .addCallAdapterFactory(CoroutineCallAdapterFactory())
             .build()
 

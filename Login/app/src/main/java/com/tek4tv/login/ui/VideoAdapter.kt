@@ -47,7 +47,7 @@ class VideoViewHolder(private val root: View) : RecyclerView.ViewHolder(root) {
         }
 
         txtTitle.text = video.title
-        txtCreatedDate.text = video.createDate
+        txtCreatedDate.text = video.schedule
     }
 
     companion object {

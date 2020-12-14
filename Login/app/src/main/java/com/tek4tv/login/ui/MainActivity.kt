@@ -6,8 +6,6 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import android.view.Menu
-import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.viewModels
 import com.tek4tv.login.R
@@ -37,7 +35,7 @@ class MainActivity : AppCompatActivity() {
         {
             txt_result.text = it.toString()
 
-            val startVideoActivity = Intent(applicationContext, VideoListActivity::class.java)
+            val startVideoActivity = Intent(applicationContext, PlaylistActivity::class.java)
             startActivity(startVideoActivity)
             finish()
         }
