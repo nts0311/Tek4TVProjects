@@ -14,16 +14,15 @@ import com.tek4tv.login.model.UserRole
     )]
 )
 data class Role(
-    val id:String,
-    val name:String,
-    val description : String
-)
-{
+    val id: String,
+    val name: String,
+    val description: String
+) {
     @PrimaryKey(autoGenerate = true)
-    var dbId : Long = 0
-    var userId : Long = 0
+    var dbId: Long = 0
+    var userId: Long = 0
 }
 
-fun Role.asDomain() = UserRole(id,name, description)
+fun Role.asDomain() = UserRole(id, name, description)
 
 fun List<Role>.asDomain() = map { it.asDomain() }

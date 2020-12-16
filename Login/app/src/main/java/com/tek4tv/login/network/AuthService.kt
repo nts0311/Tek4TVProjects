@@ -14,5 +14,8 @@ interface AuthService {
 
     @Headers("Content-Type: application/json")
     @POST("/iot/v1/app/login")
-    suspend fun login(@Body body: Map<String, String>, @Header("Authorization") token: String): Response<User>
+    suspend fun login(
+        @Body body: Map<String, String>,
+        @Header("Authorization") token: String
+    ): Response<User>
 }

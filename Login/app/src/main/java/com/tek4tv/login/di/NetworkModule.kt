@@ -35,11 +35,11 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideAuthService (retrofit: Retrofit): AuthService =
+    fun provideAuthService(retrofit: Retrofit): AuthService =
         retrofit.create(AuthService::class.java)
 
     @Provides
     @Singleton
-    fun provideVideoService (retrofit: Retrofit): VideosService =
+    fun provideVideoService(retrofit: Retrofit): VideosService =
         retrofit.create(VideosService::class.java)
 }

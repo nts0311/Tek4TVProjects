@@ -8,8 +8,8 @@ import com.tek4tv.login.db.entities.SiteMapId
 @Dao
 interface SiteMapIdDao {
     @Query("SELECT * FROM SiteMapId WHERE userId = :userDbId")
-    suspend fun getSiteMapId(userDbId : Long) : List<SiteMapId>
+    suspend fun getSiteMapId(userDbId: Long): List<SiteMapId>
 
     @Insert
-    suspend fun insertSiteMapId(roles : List<SiteMapId>) : List<Long>
+    suspend fun insertSiteMapId(roles: List<SiteMapId>): List<Long>
 }

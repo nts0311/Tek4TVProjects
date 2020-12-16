@@ -36,7 +36,8 @@ class UserRepository @Inject constructor(
             if (response.isSuccessful)
                 currentUser = response.body()
             else
-                _errorText.value = "Error: ${response.code()} - Error Message: ${response.message()}"
+                _errorText.value =
+                    "Error: ${response.code()} - Error Message: ${response.message()}"
 
             response
         } catch (e: Exception) {
@@ -58,7 +59,8 @@ class UserRepository @Inject constructor(
             if (response.isSuccessful)
                 currentToken = response.body()!!
             else
-                _errorText.value = "Error: ${response.code()} - Error Message: ${response.message()}"
+                _errorText.value =
+                    "Error: ${response.code()} - Error Message: ${response.message()}"
             currentToken
         } catch (e: Exception) {
             Log.e("getToken()", e.message!!)

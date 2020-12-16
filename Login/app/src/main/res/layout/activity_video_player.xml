@@ -44,7 +44,13 @@
         android:background="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:buffered_color="#ffffff"
+        app:played_color="#ff1111"
+        app:scrubber_color="#ff3333"
+        app:unplayed_color="#ff888888"
+        app:rewind_increment="5000"
+        app:fastforward_increment="5000">
 
     </com.google.android.exoplayer2.ui.PlayerView>
 

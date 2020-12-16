@@ -5,7 +5,7 @@ import com.tek4tv.login.model.Video
 
 class VideosResponse(
     @Json(name = "Total")
-    val total : Int,
+    val total: Int,
     @Json(name = "Result")
-    val result : List<Video>
+    val result: List<Video>
 )

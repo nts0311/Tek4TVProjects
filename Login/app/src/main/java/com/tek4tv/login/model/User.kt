@@ -23,9 +23,9 @@ data class UserRole(
 )
 
 fun UserRole.asDb() = Role(id, name, description)
-fun List<UserRole>.asDb() = map {it.asDb()}
+fun List<UserRole>.asDb() = map { it.asDb() }
 
-fun List<Int>.asSiteMap() = map {SiteMapId(it)}
+fun List<Int>.asSiteMap() = map { SiteMapId(it) }
 
 fun User.asDb() = com.tek4tv.login.db.entities.User(userId)
 

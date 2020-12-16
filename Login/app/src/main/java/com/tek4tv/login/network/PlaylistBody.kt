@@ -6,8 +6,8 @@ import com.tek4tv.login.model.UserRole
 
 @JsonClass(generateAdapter = true)
 data class PlaylistBody(
-        @Json(name = "Roles")
-        val roles: List<UserRole>,
-        @Json(name = "ID")
-        val Id: String
+    @Json(name = "Roles")
+    val roles: List<UserRole>,
+    @Json(name = "ID")
+    val Id: String
 )

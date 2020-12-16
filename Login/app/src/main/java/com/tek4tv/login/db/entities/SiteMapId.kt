@@ -14,11 +14,10 @@ import androidx.room.PrimaryKey
 )
 data class SiteMapId(
     var value: Int
-)
-{
+) {
     @PrimaryKey(autoGenerate = true)
-    var dbId : Long = 0
-    var userId : Long = 0
+    var dbId: Long = 0
+    var userId: Long = 0
 }
 
 fun SiteMapId.asDomain() = value

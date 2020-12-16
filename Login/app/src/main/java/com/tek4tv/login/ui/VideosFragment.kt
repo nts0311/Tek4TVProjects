@@ -4,14 +4,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import androidx.fragment.app.Fragment
 import android.widget.Toast
-import androidx.activity.viewModels
 import androidx.appcompat.widget.SearchView
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tek4tv.login.R
-import com.tek4tv.login.network.Resource
 import com.tek4tv.login.viewmodel.VideoListViewModel
 import kotlinx.android.synthetic.main.fragment_videos.*
 
@@ -76,7 +74,7 @@ class VideosFragment : Fragment() {
         viewModel.error.observe(viewLifecycleOwner)
         {
             Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
-            Log.e("err: VideoFrag",it)
+            Log.e("err: VideoFrag", it)
         }
     }
 
@@ -89,8 +87,7 @@ class VideosFragment : Fragment() {
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                if (query != null)
-                {
+                if (query != null) {
                     val filteredList = viewModel.videos.value!!.filter {
                         it.title.toLowerCase().contains(query.toLowerCase())
                     }
@@ -101,8 +98,7 @@ class VideosFragment : Fragment() {
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                if (newText != null && newText == "")
-                {
+                if (newText != null && newText == "") {
                     videosAdapter.videos = viewModel.videos.value!!
                 }
                 return false

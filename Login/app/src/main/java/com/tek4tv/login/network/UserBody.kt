@@ -6,5 +6,5 @@ class UserBody(
     @Json(name = "UserName")
     val username: String,
     @Json(name = "PassWord")
-    val password: String) {
-}
+    val password: String
+)

@@ -5,6 +5,5 @@ import com.tek4tv.login.model.Video
 
 class PlaylistDetailResponse(
     @Json(name = "Media")
-    val videos : List<Video>
-) {
-}
+    val videos: List<Video>
+)

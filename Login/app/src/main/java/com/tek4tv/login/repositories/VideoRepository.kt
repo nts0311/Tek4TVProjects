@@ -1,10 +1,11 @@
 package com.tek4tv.login.repositories
 
-import android.util.Log
 import com.tek4tv.login.model.PlaylistItem
 import com.tek4tv.login.model.Video
-import com.tek4tv.login.network.*
-import retrofit2.Response
+import com.tek4tv.login.network.PlaylistDetailResponse
+import com.tek4tv.login.network.Resource
+import com.tek4tv.login.network.VideosService
+import com.tek4tv.login.network.performNetworkCall
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -20,6 +21,11 @@ class VideoRepository @Inject constructor(private val videosService: VideosServi
         token: String,
         playlistId: String
     ): Resource<PlaylistDetailResponse> {
-        return performNetworkCall { videosService.getPlaylistDetail("Bearer ".plus(token), playlistId) }
+        return performNetworkCall {
+            videosService.getPlaylistDetail(
+                "Bearer ".plus(token),
+                playlistId
+            )
+        }
     }
 }

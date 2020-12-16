@@ -11,6 +11,7 @@ import android.view.WindowManager
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.exoplayer2.MediaItem
@@ -18,13 +19,13 @@ import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.util.Util
-import com.google.android.exoplayer2.video.VideoListener
 import com.tek4tv.login.R
 import com.tek4tv.login.model.Video
 import com.tek4tv.login.viewmodel.VideoPlayerViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_video_player.*
 import kotlinx.android.synthetic.main.exo_player_control_view.*
+import kotlinx.coroutines.delay
 
 @AndroidEntryPoint
 class VideoPlayerActivity : AppCompatActivity() {
@@ -68,8 +69,6 @@ class VideoPlayerActivity : AppCompatActivity() {
             txt_video_title_player.visibility = View.GONE
         }
 
-        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR
-
         btnRotate.setOnClickListener {
             val orientation = resources.configuration.orientation
             requestedOrientation = if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -77,6 +76,11 @@ class VideoPlayerActivity : AppCompatActivity() {
             } else {
                 ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
             }
+        }
+
+        lifecycleScope.launchWhenCreated {
+            delay(1500)
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR
         }
     }
 
@@ -90,7 +94,7 @@ class VideoPlayerActivity : AppCompatActivity() {
     override fun onStop() {
         super.onStop()
         if (Util.SDK_INT >= 24) {
-            releasePlayer();
+            releasePlayer()
         }
     }
 
@@ -115,7 +119,7 @@ class VideoPlayerActivity : AppCompatActivity() {
 
         } else {
             // hide status bar
-            window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
             window.decorView.systemUiVisibility =
                 View.SYSTEM_UI_FLAG_IMMERSIVE or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
         }
@@ -128,7 +132,7 @@ class VideoPlayerActivity : AppCompatActivity() {
             window.insetsController?.show(WindowInsets.Type.statusBars())
         } else {
             // Show status bar
-            window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
             window.decorView.systemUiVisibility = SYSTEM_UI_FLAG_LAYOUT_STABLE
         }
 
@@ -147,10 +151,6 @@ class VideoPlayerActivity : AppCompatActivity() {
                         playVideo(nextVideo)
                     }
                 }
-            }
-
-            override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
-
             }
         })
 
@@ -171,6 +171,7 @@ class VideoPlayerActivity : AppCompatActivity() {
     private fun setupRecycleView() {
         videosAdapter.videos = viewModel.getVideos()
         videosAdapter.videoClickListener = {
+            player?.clearMediaItems()
             playVideo(it)
         }
         rv_video_list.adapter = videosAdapter
@@ -198,17 +199,19 @@ class VideoPlayerActivity : AppCompatActivity() {
 
         val mediaItem = MediaItem.fromUri(video.path)
         txt_vid_name.text = video.title
+        txt_video_title_player.text = video.title
+
+        viewModel.curVideo = video
+        videosAdapter.videos = viewModel.getVideos().filter { it.id != video.id }
+
         player?.apply {
-            //setMediaItem(mediaItem)
+            setMediaItem(mediaItem)
             seekTo(viewModel.currentWindow, viewModel.playbackPosition)
             prepare()
         }
-        txt_video_title_player.text = video.title
-        viewModel.curVideo = video
-        videosAdapter.videos = viewModel.getVideos().filter { it.id != video.id }
     }
 
-    private fun getNextVideo(): Video? {
+    private fun getNextVideo(): Video {
         val videos = viewModel.getVideos()
 
         val i = videos.indexOf(viewModel.curVideo)

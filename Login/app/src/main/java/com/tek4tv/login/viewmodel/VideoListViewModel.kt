@@ -1,17 +1,14 @@
 package com.tek4tv.login.viewmodel
 
-import android.widget.Toast
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tek4tv.login.model.Video
+import com.tek4tv.login.network.Resource
 import com.tek4tv.login.repositories.UserRepository
 import com.tek4tv.login.repositories.VideoRepository
-import com.tek4tv.login.model.Video
-import com.tek4tv.login.network.PlaylistBody
-import com.tek4tv.login.network.PlaylistDetailResponse
-import com.tek4tv.login.network.Resource
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 

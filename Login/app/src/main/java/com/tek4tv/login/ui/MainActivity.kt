@@ -5,12 +5,10 @@ import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Bundle
-import android.telephony.SmsManager
-import androidx.appcompat.app.AppCompatActivity
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import com.tek4tv.login.R
-import com.tek4tv.login.model.Video
 import com.tek4tv.login.network.UserBody
 import com.tek4tv.login.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -49,7 +47,6 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
     private fun login() {
         if (!isNetworkAvailable()) {
             Toast.makeText(this, "Network not available", Toast.LENGTH_SHORT).show()
@@ -62,13 +59,12 @@ class MainActivity : AppCompatActivity() {
         val username = et_username.text.toString()
         val pass = et_password.text.toString()
 
-        if(username.isEmpty()) {
+        if (username.isEmpty()) {
             Toast.makeText(this, "Enter username", Toast.LENGTH_SHORT).show()
             return
         }
 
-        if(pass.isEmpty())
-        {
+        if (pass.isEmpty()) {
             Toast.makeText(this, "Enter password", Toast.LENGTH_SHORT).show()
             return
         }

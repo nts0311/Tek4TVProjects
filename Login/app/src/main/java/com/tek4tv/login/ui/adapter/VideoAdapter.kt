@@ -18,7 +18,7 @@ class VideoAdapter : RecyclerView.Adapter<VideoViewHolder>() {
             notifyDataSetChanged()
         }
 
-    var videoClickListener : (Video) -> Unit = {}
+    var videoClickListener: (Video) -> Unit = {}
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VideoViewHolder {
@@ -37,7 +37,7 @@ class VideoViewHolder(private val root: View) : RecyclerView.ViewHolder(root) {
     private val txtTitle = root.findViewById<TextView>(R.id.txt_video_title)
     private val txtCreatedDate = root.findViewById<TextView>(R.id.txt_created_date)
 
-    fun bind(video: Video, itemClickListener : (Video) -> Unit) {
+    fun bind(video: Video, itemClickListener: (Video) -> Unit) {
         Glide.with(imgThumb.context)
             .load(video.thumbUrl)
             .into(imgThumb)

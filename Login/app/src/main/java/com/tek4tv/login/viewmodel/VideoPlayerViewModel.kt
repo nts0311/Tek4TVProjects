@@ -2,8 +2,8 @@ package com.tek4tv.login.viewmodel
 
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
-import com.tek4tv.login.repositories.VideoRepository
 import com.tek4tv.login.model.Video
+import com.tek4tv.login.repositories.VideoRepository
 
 class VideoPlayerViewModel @ViewModelInject constructor(
     private val videoRepository: VideoRepository
@@ -12,7 +12,7 @@ class VideoPlayerViewModel @ViewModelInject constructor(
     var playbackPosition: Long = 0
     var curVideo: Video? = null
     var playlistId: String = ""
-    
+
 
     fun resetVideoParams() {
         currentWindow = 0

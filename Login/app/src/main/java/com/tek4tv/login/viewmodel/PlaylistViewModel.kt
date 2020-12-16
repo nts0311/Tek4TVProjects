@@ -6,7 +6,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tek4tv.login.model.PlaylistItem
-import com.tek4tv.login.network.PlaylistBody
 import com.tek4tv.login.network.Resource
 import com.tek4tv.login.repositories.UserRepository
 import com.tek4tv.login.repositories.VideoRepository
@@ -23,11 +22,11 @@ class PlaylistViewModel @ViewModelInject constructor(
     private val _error = MutableLiveData<String>()
     val error: LiveData<String> = _error
 
-    private var getPlayListDetailJob : Job? = null
+    private var getPlayListDetailJob: Job? = null
 
     fun getPlaylist() {
         getPlayListDetailJob?.cancel()
-         getPlayListDetailJob = viewModelScope.launch {
+        getPlayListDetailJob = viewModelScope.launch {
             when (val resource = videoRepository.getPlaylists(userRepository.currentToken)) {
                 is Resource.Error -> {
                     _error.value = resource.message
