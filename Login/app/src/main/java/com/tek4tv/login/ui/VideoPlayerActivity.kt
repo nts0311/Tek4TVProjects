@@ -1,5 +1,6 @@
 package com.tek4tv.login.ui
 
+import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
@@ -13,14 +14,17 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.util.Util
+import com.google.android.exoplayer2.video.VideoListener
 import com.tek4tv.login.R
 import com.tek4tv.login.model.Video
 import com.tek4tv.login.viewmodel.VideoPlayerViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_video_player.*
+import kotlinx.android.synthetic.main.exo_player_control_view.*
 
 @AndroidEntryPoint
 class VideoPlayerActivity : AppCompatActivity() {
@@ -53,9 +57,26 @@ class VideoPlayerActivity : AppCompatActivity() {
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             hideSystemUi()
             videoView.layoutParams.height = ConstraintLayout.LayoutParams.MATCH_PARENT
+            btnRotate.setImageResource(R.drawable.ic_baseline_fullscreen_exit_24)
+
+            txt_video_title_player.visibility = View.VISIBLE
         } else {
             showSystemUi()
             videoView.layoutParams.height = ConstraintLayout.LayoutParams.WRAP_CONTENT
+            btnRotate.setImageResource(R.drawable.ic_baseline_fullscreen_24)
+
+            txt_video_title_player.visibility = View.GONE
+        }
+
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR
+
+        btnRotate.setOnClickListener {
+            val orientation = resources.configuration.orientation
+            requestedOrientation = if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+            } else {
+                ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+            }
         }
     }
 
@@ -117,6 +138,22 @@ class VideoPlayerActivity : AppCompatActivity() {
         player = SimpleExoPlayer.Builder(this).build()
         videoView.player = player
         player?.playWhenReady = true
+
+        player?.addListener(object : Player.EventListener {
+            override fun onPlaybackStateChanged(state: Int) {
+                if (state == Player.STATE_ENDED) {
+                    if (sw_autoplay.isChecked) {
+                        val nextVideo = getNextVideo()
+                        playVideo(nextVideo)
+                    }
+                }
+            }
+
+            override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+
+            }
+        })
+
         playVideo(viewModel.curVideo)
     }
 
@@ -162,12 +199,22 @@ class VideoPlayerActivity : AppCompatActivity() {
         val mediaItem = MediaItem.fromUri(video.path)
         txt_vid_name.text = video.title
         player?.apply {
-            setMediaItem(mediaItem)
+            //setMediaItem(mediaItem)
             seekTo(viewModel.currentWindow, viewModel.playbackPosition)
             prepare()
         }
+        txt_video_title_player.text = video.title
         viewModel.curVideo = video
         videosAdapter.videos = viewModel.getVideos().filter { it.id != video.id }
+    }
+
+    private fun getNextVideo(): Video? {
+        val videos = viewModel.getVideos()
+
+        val i = videos.indexOf(viewModel.curVideo)
+
+        return if (i == videos.size - 1) videos.first()
+        else videos[i + 1]
     }
 
     companion object {

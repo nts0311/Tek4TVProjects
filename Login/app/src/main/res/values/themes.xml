@@ -23,4 +23,13 @@
     <style name="Theme.Login.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.Login.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+
+    <style name="PauseButton" parent="ExoMediaButton.Pause">
+        <item name="android:src">@drawable/pause_button</item>
+    </style>
+
+    <style name="PlayButton" parent="ExoMediaButton.Play">
+        <item name="android:src">@drawable/play_button</item>
+    </style>
 </resources>

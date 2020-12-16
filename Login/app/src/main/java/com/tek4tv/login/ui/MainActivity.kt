@@ -5,10 +5,12 @@ import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Bundle
+import android.telephony.SmsManager
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.Toast
 import androidx.activity.viewModels
 import com.tek4tv.login.R
+import com.tek4tv.login.model.Video
 import com.tek4tv.login.network.UserBody
 import com.tek4tv.login.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -45,6 +47,8 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this@MainActivity, it, Toast.LENGTH_SHORT).show()
         }
     }
+
+
 
     private fun login() {
         if (!isNetworkAvailable()) {
