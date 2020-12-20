@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tek4tv.login.ui.PlayerScreenMotionLayout
+        android:id="@+id/root_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent"
+        app:layoutDescription="@xml/play_screen_motion_scene"
+        app:layout_collapseMode="parallax">
+
+        <LinearLayout
+            android:id="@+id/player_background_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
+
+        </LinearLayout>
+
+        <com.google.android.exoplayer2.ui.PlayerView
+            android:id="@+id/video_view"
+            android:layout_width="230dp"
+            android:layout_height="47dp"
+            android:background="@color/black"
+            app:buffered_color="#ffffff"
+            app:fastforward_increment="5000"
+            app:played_color="#ff1111"
+            app:rewind_increment="5000"
+            app:scrubber_color="#ff3333"
+            app:unplayed_color="#ff888888" />
+
+    </com.tek4tv.login.ui.PlayerScreenMotionLayout>
+
+</layout>

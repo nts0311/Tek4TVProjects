@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MotionScene xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:motion="http://schemas.android.com/apk/res-auto">
+
+
+    <ConstraintSet android:id="@+id/start" >
+
+        <Constraint
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/player_background_view"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+        <Constraint
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:id="@+id/video_view"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/player_background_view" />
+    </ConstraintSet>
+    <ConstraintSet android:id="@+id/end" >
+
+        <Constraint
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:id="@+id/player_background_view"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+        <Constraint
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="@id/player_background_view"
+            android:layout_width="200dp"
+            android:id="@+id/video_view"
+            app:layout_constraintTop_toTopOf="@+id/player_background_view"
+            app:layout_constraintStart_toStartOf="@id/player_background_view" />
+    </ConstraintSet>
+    <Transition
+        app:constraintSetStart="@+id/start"
+        app:constraintSetEnd="@+id/end"
+        motion:duration="300"
+        app:motionInterpolator="easeInOut">
+        <OnSwipe
+            app:touchAnchorId="@+id/player_background_view"
+            app:dragDirection="dragDown" />
+        <KeyFrameSet >
+            <KeyPosition
+                app:motionTarget="@+id/video_view"
+                app:framePosition="70"
+                app:keyPositionType="deltaRelative"
+                app:curveFit="linear"
+                app:percentWidth="0"
+                app:percentX="0"
+                app:percentY="0.8" />
+        </KeyFrameSet>
+    </Transition>
+</MotionScene>

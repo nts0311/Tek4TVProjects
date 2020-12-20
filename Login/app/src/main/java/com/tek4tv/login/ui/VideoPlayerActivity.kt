@@ -2,12 +2,15 @@ package com.tek4tv.login.ui
 
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
+import android.media.AudioManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE
 import android.view.WindowInsets
 import android.view.WindowManager
+import android.widget.SeekBar
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -17,8 +20,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.ext.cast.CastPlayer
+import com.google.android.exoplayer2.ext.cast.SessionAvailabilityListener
 import com.google.android.exoplayer2.ui.PlayerView
+import com.google.android.exoplayer2.util.MimeTypes
 import com.google.android.exoplayer2.util.Util
+import com.google.android.gms.cast.MediaInfo
+import com.google.android.gms.cast.MediaQueueItem
+import com.google.android.gms.cast.framework.CastButtonFactory
+import com.google.android.gms.cast.framework.CastContext
 import com.tek4tv.login.R
 import com.tek4tv.login.model.Video
 import com.tek4tv.login.viewmodel.VideoPlayerViewModel
@@ -36,6 +46,10 @@ class VideoPlayerActivity : AppCompatActivity() {
     private val videosAdapter = VideoAdapter()
 
     private val viewModel: VideoPlayerViewModel by viewModels()
+
+    private lateinit var audioManager: AudioManager
+
+    private lateinit var castPlayer: CastPlayer
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -77,6 +91,23 @@ class VideoPlayerActivity : AppCompatActivity() {
                 ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
             }
         }
+
+        CastButtonFactory.setUpMediaRouteButton(this, cast_btn)
+        castPlayer = CastPlayer(CastContext.getSharedInstance(this))
+        castPlayer.setSessionAvailabilityListener(object : SessionAvailabilityListener {
+            override fun onCastSessionAvailable() {
+
+                val mediaItem = MediaItem.fromUri(viewModel.curVideo!!.path)
+
+                castPlayer.setMediaItem(mediaItem, viewModel.playbackPosition)
+                castPlayer.playWhenReady = true
+                castPlayer.prepare()
+            }
+
+            override fun onCastSessionUnavailable() {
+
+            }
+        })
 
         lifecycleScope.launchWhenCreated {
             delay(1500)
@@ -154,6 +185,8 @@ class VideoPlayerActivity : AppCompatActivity() {
             }
         })
 
+        initAudio()
+
         playVideo(viewModel.curVideo)
     }
 
@@ -218,6 +251,38 @@ class VideoPlayerActivity : AppCompatActivity() {
 
         return if (i == videos.size - 1) videos.first()
         else videos[i + 1]
+    }
+
+    private fun initAudio() {
+        audioManager = getSystemService(AUDIO_SERVICE) as AudioManager
+
+        val type = player!!.audioStreamType
+        val maxVolume = audioManager.getStreamMaxVolume(type)
+        val i = 100 / maxVolume
+
+        val currentVolume = audioManager.getStreamVolume(type)
+        volume_bar.progress = i * currentVolume
+
+
+        audioManager.isVolumeFixed
+        volume_bar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+
+                audioManager.setStreamVolume(
+                    type,
+                    progress / i,
+                    0
+                )
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+
+            }
+        })
     }
 
     companion object {

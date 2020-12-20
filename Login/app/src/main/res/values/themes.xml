@@ -32,4 +32,16 @@
     <style name="PlayButton" parent="ExoMediaButton.Play">
         <item name="android:src">@drawable/play_button</item>
     </style>
+
+    <style name="SwitchTheme" parent="Theme.Login">
+        <item name="colorSecondary">#ff1111</item>
+    </style>
+
+    <style name="VolumeBar" parent="Theme.Login">
+        <item name="colorSecondary">#ff1111</item>
+
+        <item name="android:textColorSecondary">@color/white</item>
+    </style>
+
+
 </resources>
