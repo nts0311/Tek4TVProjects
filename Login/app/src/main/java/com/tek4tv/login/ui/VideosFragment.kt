@@ -43,7 +43,7 @@ class VideosFragment : Fragment() {
 
 
 
-        viewModel = ViewModelProvider(activity!!).get(playlistId!!, VideoListViewModel::class.java)
+        viewModel = ViewModelProvider(requireActivity()).get(playlistId!!, VideoListViewModel::class.java)
 
         setupRecycleView()
         registerObservers()
@@ -59,10 +59,18 @@ class VideosFragment : Fragment() {
         rv_videos.adapter = videosAdapter
         rv_videos.layoutManager = LinearLayoutManager(context)
         videosAdapter.videoClickListener = {
-            val intent = Intent(context, VideoPlayerActivity::class.java)
+            /*val intent = Intent(context, VideoPlayerActivity::class.java)
             intent.putExtra(VideoPlayerActivity.VIDEO_KEY, it)
             intent.putExtra(VideoPlayerActivity.PLAYLIST_ID_KEY, playlistId)
-            startActivity(intent)
+            startActivity(intent)*/
+
+            (requireActivity() as PlaylistActivity).supportActionBar!!.hide()
+
+            val frag = VideoPlayerFragment.newInstance(it, playlistId!!)
+
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.play_screen_layout,frag,VideoPlayerFragment.TAG)
+                .commitAllowingStateLoss()
         }
     }
 

@@ -92,4 +92,7 @@ dependencies {
 
     //cast
     implementation 'com.google.android.exoplayer:extension-cast:2.12.2'
+
+    //frag
+    implementation 'androidx.fragment:fragment-ktx:1.2.5'
 }

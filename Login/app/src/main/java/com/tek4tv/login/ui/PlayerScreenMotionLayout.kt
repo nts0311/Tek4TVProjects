@@ -10,17 +10,6 @@ import androidx.constraintlayout.motion.widget.MotionLayout
 import com.tek4tv.login.R
 
 //stolen
-
-/**
- * This is where all the magic happens.
- * This View Takes up the entire screen.
- * The background of this view is actually transparent and we resize `player_background_view`
- * based on user touch. The player with the white background is what is resized, but this
- * PlayerScreenMotionLayout always takes up the entire screen.
- * So when you touch the Fragment when the player is minimized, you are actually touching this layout.
- * We calculate whether the touch is on the Mini player or not and based on that we pass the toucch to
- * parent or consume it
- */
 class PlayerScreenMotionLayout(
     context: Context,
     attributeSet: AttributeSet? = null
@@ -29,6 +18,11 @@ class PlayerScreenMotionLayout(
     private val viewToDetectTouch by lazy {
         findViewById<View>(R.id.player_background_view)
     }
+
+    private val videoView by lazy {
+        findViewById<CustomPlayerView>(R.id.video_view)
+    }
+
     private val viewRect = Rect()
     private var hasTouchStarted = false
 
@@ -43,10 +37,11 @@ class PlayerScreenMotionLayout(
             }
 
             override fun onTransitionStarted(
-                p0: MotionLayout?,
-                p1: Int,
-                p2: Int
+                motionLayout: MotionLayout?,
+                startId: Int,
+                endId: Int
             ) {
+                videoView.hideController()
             }
 
             override fun onTransitionChange(
@@ -59,19 +54,31 @@ class PlayerScreenMotionLayout(
 
             override fun onTransitionCompleted(
                 p0: MotionLayout?,
-                p1: Int
+                currentId: Int
             ) {
                 hasTouchStarted = false
+
+                when(currentId)
+                {
+                    R.id.start -> {
+                        videoView.useController = true
+                    }
+
+                    R.id.end -> {
+                        videoView.useController = false
+                    }
+                }
             }
         })
     }
 
-    private val gestureDetector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
-        override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
-            transitionToEnd()
-            return false
-        }
-    })
+    private val gestureDetector =
+        GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
+            override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
+                transitionToStart()
+                return false
+            }
+        })
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         gestureDetector.onTouchEvent(event)   //This ensures the Mini Player is maximised on single tap
