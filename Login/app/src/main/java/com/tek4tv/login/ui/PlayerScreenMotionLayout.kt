@@ -7,6 +7,7 @@ import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
 import androidx.constraintlayout.motion.widget.MotionLayout
+import com.google.android.exoplayer2.ui.PlayerView
 import com.tek4tv.login.R
 
 //stolen
@@ -20,7 +21,7 @@ class PlayerScreenMotionLayout(
     }
 
     private val videoView by lazy {
-        findViewById<CustomPlayerView>(R.id.video_view)
+        findViewById<PlayerView>(R.id.video_view)
     }
 
     private val viewRect = Rect()
@@ -75,7 +76,8 @@ class PlayerScreenMotionLayout(
     private val gestureDetector =
         GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
             override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
-                transitionToStart()
+                if(currentState == R.id.end)
+                    transitionToStart()
                 return false
             }
         })

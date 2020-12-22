@@ -70,6 +70,7 @@ class VideosFragment : Fragment() {
 
             parentFragmentManager.beginTransaction()
                 .replace(R.id.play_screen_layout,frag,VideoPlayerFragment.TAG)
+                .addToBackStack(it.id.toString())
                 .commitAllowingStateLoss()
         }
     }

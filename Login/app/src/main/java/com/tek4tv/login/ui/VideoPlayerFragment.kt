@@ -6,12 +6,13 @@ import android.media.AudioManager
 import android.os.Build
 import android.os.Bundle
 import android.view.*
-import androidx.fragment.app.Fragment
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
@@ -26,8 +27,9 @@ import com.tek4tv.login.R
 import com.tek4tv.login.model.Video
 import com.tek4tv.login.viewmodel.VideoPlayerViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.activity_video_player.*
+import kotlinx.android.synthetic.main.activity_video_player.rv_video_list
 import kotlinx.android.synthetic.main.exo_player_control_view.*
+import kotlinx.android.synthetic.main.fragment_video_player.*
 import kotlinx.coroutines.delay
 
 @AndroidEntryPoint
@@ -65,14 +67,13 @@ class VideoPlayerFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupRecycleView()
+
 
         if (viewModel.curVideo == null)
             viewModel.curVideo = curVideo
-            //viewModel.curVideo = intent.getSerializableExtra(VIDEO_KEY) as Video
-
-        //viewModel.playlistId = intent.getStringExtra(PLAYLIST_ID_KEY) ?: ""
         viewModel.playlistId = playlistId!!
+
+        setupRecycleView()
 
         //txt_vid_name.text = viewModel.curVideo!!.title
 
@@ -90,16 +91,17 @@ class VideoPlayerFragment : Fragment() {
             videoView.layoutParams.height = ConstraintLayout.LayoutParams.WRAP_CONTENT
             btnRotate.setImageResource(R.drawable.ic_baseline_fullscreen_24)
 
-            txt_video_title_player.visibility = View.GONE
+            //txt_video_title_player.visibility = View.GONE
         }
 
         btnRotate.setOnClickListener {
             val orientation = resources.configuration.orientation
-            requireActivity().requestedOrientation = if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-            } else {
-                ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-            }
+            requireActivity().requestedOrientation =
+                if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                    ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+                } else {
+                    ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+                }
         }
 
         CastButtonFactory.setUpMediaRouteButton(requireContext(), cast_btn)
@@ -174,7 +176,8 @@ class VideoPlayerFragment : Fragment() {
         } else {
             // Show status bar
             requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
-            requireActivity().window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+            requireActivity().window.decorView.systemUiVisibility =
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
         }
 
     }
@@ -217,20 +220,21 @@ class VideoPlayerFragment : Fragment() {
             player?.clearMediaItems()
             playVideo(it)
         }
-        //rv_video_list.adapter = videosAdapter
-       //rv_video_list.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            //override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-               // super.onScrollStateChanged(recyclerView, newState)
-               // val canScrollUp = rv_video_list.canScrollVertically(-1)
-//                if (!canScrollUp) {
-//                    if (txt_vid_name.visibility != View.VISIBLE)
-//                        txt_vid_name.visibility = View.VISIBLE
-//                } else {
-//                    if (txt_vid_name.visibility != View.GONE)
-//                        txt_vid_name.visibility = View.GONE
-//                }
-            //}
-      //  })
+        rv_video_list_frag.adapter = videosAdapter
+        rv_video_list_frag.layoutManager = LinearLayoutManager(requireContext())
+        rv_video_list_frag.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                //val canScrollUp = rv_video_list.canScrollVertically(-1)
+                /*if (!canScrollUp) {
+                    if (txt_vid_name.visibility != View.VISIBLE)
+                        txt_vid_name.visibility = View.VISIBLE
+                } else {
+                    if (txt_vid_name.visibility != View.GONE)
+                        txt_vid_name.visibility = View.GONE
+                }*/
+            }
+        })
     }
 
     private fun playVideo(video: Video?) {
@@ -263,7 +267,8 @@ class VideoPlayerFragment : Fragment() {
     }
 
     private fun initAudio() {
-        audioManager = requireActivity().getSystemService(AppCompatActivity.AUDIO_SERVICE) as AudioManager
+        audioManager =
+            requireActivity().getSystemService(AppCompatActivity.AUDIO_SERVICE) as AudioManager
 
         val type = player!!.audioStreamType
         val maxVolume = audioManager.getStreamMaxVolume(type)
