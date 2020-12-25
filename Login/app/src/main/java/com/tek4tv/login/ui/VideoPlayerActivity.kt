@@ -3,14 +3,12 @@ package com.tek4tv.login.ui
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.media.AudioManager
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE
 import android.view.WindowInsets
 import android.view.WindowManager
-import android.widget.SeekBar
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -23,10 +21,7 @@ import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.ext.cast.CastPlayer
 import com.google.android.exoplayer2.ext.cast.SessionAvailabilityListener
 import com.google.android.exoplayer2.ui.PlayerView
-import com.google.android.exoplayer2.util.MimeTypes
 import com.google.android.exoplayer2.util.Util
-import com.google.android.gms.cast.MediaInfo
-import com.google.android.gms.cast.MediaQueueItem
 import com.google.android.gms.cast.framework.CastButtonFactory
 import com.google.android.gms.cast.framework.CastContext
 import com.tek4tv.login.R
@@ -185,8 +180,6 @@ class VideoPlayerActivity : AppCompatActivity() {
             }
         })
 
-        initAudio()
-
         playVideo(viewModel.curVideo)
     }
 
@@ -224,6 +217,8 @@ class VideoPlayerActivity : AppCompatActivity() {
         })
     }
 
+
+
     private fun playVideo(video: Video?) {
         if (video == null) return
 
@@ -251,38 +246,6 @@ class VideoPlayerActivity : AppCompatActivity() {
 
         return if (i == videos.size - 1) videos.first()
         else videos[i + 1]
-    }
-
-    private fun initAudio() {
-        audioManager = getSystemService(AUDIO_SERVICE) as AudioManager
-
-        val type = player!!.audioStreamType
-        val maxVolume = audioManager.getStreamMaxVolume(type)
-        val i = 100 / maxVolume
-
-        val currentVolume = audioManager.getStreamVolume(type)
-        volume_bar.progress = i * currentVolume
-
-
-        audioManager.isVolumeFixed
-        volume_bar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-
-                audioManager.setStreamVolume(
-                    type,
-                    progress / i,
-                    0
-                )
-            }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {
-
-            }
-
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {
-
-            }
-        })
     }
 
     companion object {

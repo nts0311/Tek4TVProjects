@@ -16,22 +16,6 @@ data class Video(
     val path: String,
     @Json(name = "Schedule")
     val schedule: String,
-
-
-    /*@Json(name = "CreateDate")
-    val createDate: String,
-    @Json(name = "Title")
-    val title: String,
-    @Json(name = "IsSchedule")
-    val isSchedule: Boolean,
-
-    @Json(name = "Status")
-    val status: String,
-    @Json(name = "Media")
-    val media: Media,
-    @Json(name = "Playlist")
-    val playList: PlayList,*/
-
 ) : Serializable
 
 data class Media(

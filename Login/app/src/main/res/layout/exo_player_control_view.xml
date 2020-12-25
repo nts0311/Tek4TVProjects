@@ -146,7 +146,7 @@
         app:layout_constraintTop_toTopOf="@+id/sw_autoplay"
         app:layout_constraintVertical_bias="1.0" />
 
-    <com.tek4tv.login.ui.VerticalSeekBar
+<!--    <com.tek4tv.login.ui.VerticalSeekBar
         android:id="@+id/volume_bar"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
@@ -157,9 +157,7 @@
         android:theme="@style/VolumeBar"
         app:layout_constraintBottom_toTopOf="@+id/exo_duration"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_video_title_player">
-
-    </com.tek4tv.login.ui.VerticalSeekBar>
+        app:layout_constraintTop_toBottomOf="@+id/txt_video_title_player"/>-->
 
     <androidx.mediarouter.app.MediaRouteButton
         android:id="@+id/cast_btn"

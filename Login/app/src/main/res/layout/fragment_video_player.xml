@@ -36,5 +36,32 @@
         android:layout_height="0dp"
         android:nestedScrollingEnabled="false"/>
 
+    <ImageButton
+        android:id="@+id/btn_play_pause_mini"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_baseline_pause_24"
+        tools:layout_editor_absoluteX="46dp"
+        tools:layout_editor_absoluteY="59dp"
+        android:background="@null"/>
+
+    <TextView
+        android:id="@+id/txt_video_title_mini"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="hgkjsaghkjsgkashfkadslfhkadsjfffffffffffffffffffffff"
+        tools:layout_editor_absoluteX="221dp"
+        tools:layout_editor_absoluteY="246dp"
+        android:maxLines="1"
+        android:maxWidth="100dp"
+        android:ellipsize="end"/>
+
+    <ImageButton
+        android:id="@+id/close_mini_player"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/ic_baseline_close_24"
+        android:background="@null"/>
+
 </com.tek4tv.login.ui.PlayerScreenMotionLayout>
 

@@ -2,24 +2,23 @@ package com.tek4tv.login.ui
 
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
-import android.media.AudioManager
 import android.os.Build
 import android.os.Bundle
 import android.view.*
-import android.widget.SeekBar
-import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.ext.cast.CastPlayer
 import com.google.android.exoplayer2.ext.cast.SessionAvailabilityListener
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.ui.PlayerView
+import com.google.android.exoplayer2.util.MimeTypes
 import com.google.android.exoplayer2.util.Util
 import com.google.android.gms.cast.framework.CastButtonFactory
 import com.google.android.gms.cast.framework.CastContext
@@ -27,7 +26,6 @@ import com.tek4tv.login.R
 import com.tek4tv.login.model.Video
 import com.tek4tv.login.viewmodel.VideoPlayerViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.activity_video_player.rv_video_list
 import kotlinx.android.synthetic.main.exo_player_control_view.*
 import kotlinx.android.synthetic.main.fragment_video_player.*
 import kotlinx.coroutines.delay
@@ -42,10 +40,7 @@ class VideoPlayerFragment : Fragment() {
 
 
     private val videosAdapter = VideoAdapter()
-
     private val viewModel: VideoPlayerViewModel by viewModels()
-
-    private lateinit var audioManager: AudioManager
 
     private lateinit var castPlayer: CastPlayer
 
@@ -68,14 +63,9 @@ class VideoPlayerFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
         if (viewModel.curVideo == null)
             viewModel.curVideo = curVideo
         viewModel.playlistId = playlistId!!
-
-        setupRecycleView()
-
-        //txt_vid_name.text = viewModel.curVideo!!.title
 
         videoView = view.findViewById(R.id.video_view)
 
@@ -90,36 +80,11 @@ class VideoPlayerFragment : Fragment() {
             showSystemUi()
             videoView.layoutParams.height = ConstraintLayout.LayoutParams.WRAP_CONTENT
             btnRotate.setImageResource(R.drawable.ic_baseline_fullscreen_24)
-
-            //txt_video_title_player.visibility = View.GONE
         }
 
-        btnRotate.setOnClickListener {
-            val orientation = resources.configuration.orientation
-            requireActivity().requestedOrientation =
-                if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                    ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-                } else {
-                    ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-                }
-        }
-
-        CastButtonFactory.setUpMediaRouteButton(requireContext(), cast_btn)
-        castPlayer = CastPlayer(CastContext.getSharedInstance(requireContext()))
-        castPlayer.setSessionAvailabilityListener(object : SessionAvailabilityListener {
-            override fun onCastSessionAvailable() {
-
-                val mediaItem = MediaItem.fromUri(viewModel.curVideo!!.path)
-
-                castPlayer.setMediaItem(mediaItem, viewModel.playbackPosition)
-                castPlayer.playWhenReady = true
-                castPlayer.prepare()
-            }
-
-            override fun onCastSessionUnavailable() {
-
-            }
-        })
+        setupRecycleView()
+        initButtons()
+        initCast()
 
         lifecycleScope.launchWhenCreated {
             delay(1500)
@@ -182,8 +147,65 @@ class VideoPlayerFragment : Fragment() {
 
     }
 
+    private fun initCast() {
+        CastButtonFactory.setUpMediaRouteButton(requireContext(), cast_btn)
+
+        CastContext.getSharedInstance()?.let {
+            castPlayer = CastPlayer(it)
+        }
+
+        castPlayer.setSessionAvailabilityListener(object : SessionAvailabilityListener {
+            override fun onCastSessionAvailable() {
+                val mediaItem = MediaItem.fromUri(viewModel.curVideo!!.path)
+
+                castPlayer.setMediaItem(mediaItem, viewModel.playbackPosition)
+                castPlayer.playWhenReady = true
+                castPlayer.prepare()
+            }
+
+            override fun onCastSessionUnavailable() {
+                castPlayer.currentPosition.let {
+                    viewModel.playbackPosition = it
+                }
+            }
+        })
+    }
+
+    private fun initButtons() {
+        btnRotate.setOnClickListener {
+            val orientation = resources.configuration.orientation
+            requireActivity().requestedOrientation =
+                if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                    ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+                } else {
+                    ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+                }
+        }
+
+        close_mini_player.setOnClickListener {
+            parentFragmentManager.popBackStackImmediate("player",FragmentManager.POP_BACK_STACK_INCLUSIVE)
+        }
+
+        btn_play_pause_mini.setOnClickListener {
+            val isPlaying = videoView.player!!.isPlaying
+
+            if (isPlaying) {
+                videoView.player!!.pause()
+                btn_play_pause_mini.setImageResource(R.drawable.ic_baseline_play_arrow_24)
+            } else {
+                videoView.player!!.play()
+                btn_play_pause_mini.setImageResource(R.drawable.ic_baseline_pause_24)
+            }
+        }
+    }
+
     private fun initPlayer() {
-        player = SimpleExoPlayer.Builder(requireContext()).build()
+        val trackSelector = DefaultTrackSelector(requireContext())
+        trackSelector.setParameters(trackSelector.buildUponParameters().setMaxVideoSizeSd())
+
+        player = SimpleExoPlayer.Builder(requireContext())
+            .setTrackSelector(trackSelector)
+            .build()
         videoView.player = player
         player?.playWhenReady = true
 
@@ -197,8 +219,6 @@ class VideoPlayerFragment : Fragment() {
                 }
             }
         })
-
-        initAudio()
 
         playVideo(viewModel.curVideo)
     }
@@ -222,19 +242,6 @@ class VideoPlayerFragment : Fragment() {
         }
         rv_video_list_frag.adapter = videosAdapter
         rv_video_list_frag.layoutManager = LinearLayoutManager(requireContext())
-        rv_video_list_frag.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                //val canScrollUp = rv_video_list.canScrollVertically(-1)
-                /*if (!canScrollUp) {
-                    if (txt_vid_name.visibility != View.VISIBLE)
-                        txt_vid_name.visibility = View.VISIBLE
-                } else {
-                    if (txt_vid_name.visibility != View.GONE)
-                        txt_vid_name.visibility = View.GONE
-                }*/
-            }
-        })
     }
 
     private fun playVideo(video: Video?) {
@@ -243,8 +250,9 @@ class VideoPlayerFragment : Fragment() {
         if (video.id != viewModel.curVideo?.id)
             viewModel.resetVideoParams()
 
-        val mediaItem = MediaItem.fromUri(video.path)
-        //txt_vid_name.text = video.title
+        val mediaItem = MediaItem
+            .fromUri(viewModel.curVideo!!.path)
+        txt_video_title_mini.text = video.title
         txt_video_title_player.text = video.title
 
         viewModel.curVideo = video
@@ -255,6 +263,7 @@ class VideoPlayerFragment : Fragment() {
             seekTo(viewModel.currentWindow, viewModel.playbackPosition)
             prepare()
         }
+
     }
 
     private fun getNextVideo(): Video {
@@ -266,38 +275,6 @@ class VideoPlayerFragment : Fragment() {
         else videos[i + 1]
     }
 
-    private fun initAudio() {
-        audioManager =
-            requireActivity().getSystemService(AppCompatActivity.AUDIO_SERVICE) as AudioManager
-
-        val type = player!!.audioStreamType
-        val maxVolume = audioManager.getStreamMaxVolume(type)
-        val i = 100 / maxVolume
-
-        val currentVolume = audioManager.getStreamVolume(type)
-        volume_bar.progress = i * currentVolume
-
-
-        audioManager.isVolumeFixed
-        volume_bar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-
-                audioManager.setStreamVolume(
-                    type,
-                    progress / i,
-                    0
-                )
-            }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {
-
-            }
-
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {
-
-            }
-        })
-    }
 
     companion object {
         @JvmStatic

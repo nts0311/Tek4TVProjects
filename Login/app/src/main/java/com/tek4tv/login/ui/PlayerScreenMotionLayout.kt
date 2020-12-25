@@ -59,8 +59,7 @@ class PlayerScreenMotionLayout(
             ) {
                 hasTouchStarted = false
 
-                when(currentId)
-                {
+                when (currentId) {
                     R.id.start -> {
                         videoView.useController = true
                     }
@@ -76,7 +75,7 @@ class PlayerScreenMotionLayout(
     private val gestureDetector =
         GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
             override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
-                if(currentState == R.id.end)
+                if (currentState == R.id.end)
                     transitionToStart()
                 return false
             }
