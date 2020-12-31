@@ -28,7 +28,8 @@
         app:rewind_increment="5000"
         app:scrubber_color="#ff3333"
         app:unplayed_color="#ff888888"
-        android:scaleType="centerCrop"/>
+        android:scaleType="centerCrop"
+        app:surface_type="texture_view"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_video_list_frag"
